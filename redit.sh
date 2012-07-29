@@ -14,11 +14,13 @@
 #  - ssh server on local
 #  - a network connectivity between remote and local
 #  - A ssh key and a ssh-agent
-#  - Recommended: ssh server on remote. I suggest to connect remote using "ssh -A -R 1022:localhost:22"
+#  - Recommended: ssh server on remote. I suggest to connect remote using
+#   "ssh -A -R 1022:localhost:22" and alias ssh to this command
 #  - I also recommand to place ths script in your $PATH and set accordingly $EDITOR
 # 
 # Limitations and TODO:
 #   Poor handling of abnormal cases (Race conditions, Ctrl+C on remote, retc...)
+#   May does not keep permission and proprietary
 #   Each user on remote have to choose a different port 
 #   Need between 0.2s and 1s to start. It's a quite a lot.
 #   No option to disable ControlMaster (even if it should work with warnings)
