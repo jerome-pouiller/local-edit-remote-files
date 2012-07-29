@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# Licence: GPL
+# Created: 2012-07-29 14:56:23+02:00
+# Main authors:
+#     - Jérôme Pouiller <jezz@sysmic.org>
+#
 
 # Local = host where editor (and X server) run
 # Remote = host where this script run and file to be edited is located
