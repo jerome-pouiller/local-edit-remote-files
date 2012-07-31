@@ -7,7 +7,8 @@
 #
 
 # Local = host where editor (and X server) run
-# Remote = host where this script run and file to be edited is located
+# Remote = host where this script run and file to be edited is located. Remote
+#          can also be a different user.
 #
 # To work, you need:
 #  - inotify-tools on local
@@ -15,12 +16,16 @@
 #  - a network connectivity between remote and local
 #  - A ssh key and a ssh-agent
 #  - Recommended: ssh server on remote. I suggest to connect remote using
-#   "ssh -A -R 1022:localhost:22" and alias ssh to this command
-#  - I also recommand to place ths script in your $PATH and set accordingly $EDITOR
-# 
+#    "ssh -A -R 1022:localhost:22" or better:
+#       [[ -n "$SSH_TTY" ]] && FWDPORT=22 || FWDPORT=1022
+#       alias ssh="ssh -A -R 1022:localhost:$FWDPORT"
+#  - Recommended: alias "sudo" to "sudo SSH_AUTH_SOCK=$SSH_AUTH_SOCK" to be able
+#    to edit files as root without password prompt
+#
+
 # Limitations and TODO:
 #   Poor handling of abnormal cases (Race conditions, Ctrl+C on remote, retc...)
-#   May does not keep permission and proprietary
+#   May does not keep permissions and proprietary
 #   Each user on remote have to choose a different port 
 #   Need between 0.2s and 1s to start. It's a quite a lot.
 #   No option to disable ControlMaster (even if it should work with warnings)
@@ -30,7 +35,6 @@
 #   No support for line jumping (like "edit.sh file +15")
 #   Written in bash
 
-
 PORT=10022
 HOST=jezz@localhost
 LDIR=\~/remote/$(hostname)
@@ -38,7 +42,7 @@ LEDITOR="DISPLAY=:0 kate -b"
 SSH="ssh -o ControlPath=~/.ssh/%r@%h:%p -o ControlPersist=5 -p $PORT"
 SCP="scp -o ControlPath=~/.ssh/%r@%h:%p -o ControlPersist=5 -P $PORT"
 
-[ -e ~/.ssh/$HOST:$PORT ] || $SSH -Mn $HOST true
+[ -e ~/.ssh/$HOST:$PORT ] || $SSH -Mn $HOST true || exit 1
 
 $SSH $HOST "mkdir -p $LDIR; cat > $LDIR/local-edit.sh; chmod +x $LDIR/local-edit.sh" << EOF &
 #! /bin/bash
